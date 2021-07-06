@@ -1,0 +1,7 @@
+{
+  "port": 5000,
+  "mongoUri": "mongodb+srv://Esperson:SuiRYUdsie27@cluster0.4ij87.mongodb.net/uisocial?retryWrites=true&w=majority",
+  "cloudinaryName": "esperson",
+  "apiKey": "346617372382718",
+  "apiSecret": "q27zFiHVz_DWpZAaYl8tfQsnv7c"
+}
