@@ -93,11 +93,6 @@ router.get('/user/:username', async (req, res) => {
   try {
     const currentUser = await User.findOne({ username: req.params.username })
     const userPosts = await Post.find({ userId: currentUser._id })
-    // const friendPosts = await Promise.all(
-    //   currentUser.followings.map((friendId) => {
-    //     return Post.find({ userId: friendId })
-    //   })
-    // )
     res.status(200).json(userPosts)
   } catch (err) {
     res.status(500).json(err)
