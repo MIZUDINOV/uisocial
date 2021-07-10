@@ -1,12 +1,19 @@
 import React from 'react'
 
 import './share.css'
-import { PermMedia, Label, Room, EmojiEmotions } from '@material-ui/icons'
+import {
+  PermMedia,
+  Label,
+  Room,
+  EmojiEmotions,
+  Cancel,
+} from '@material-ui/icons'
 import { CircularProgress } from '@material-ui/core'
 
 import { AuthContext } from '../../contextStore/AuthContext'
 
 import axios from 'axios'
+import { noAvatar } from '../../pages/profile/Profile'
 
 export default function Share() {
   const [desc, setDesc] = React.useState('')
@@ -52,11 +59,7 @@ export default function Share() {
         <div className='shareTop'>
           <img
             className='shareProfileImg'
-            src={
-              user.profilePicture
-                ? user.profilePicture
-                : '/assets/person/noProfilePicture.png'
-            }
+            src={user.profilePicture ? user.profilePicture : noAvatar}
             alt='avatar'
           />
           <input
@@ -67,6 +70,21 @@ export default function Share() {
           />
         </div>
         <hr className='shareHr' />
+        {file && (
+          <div className='shareImgContainer'>
+            <div className='shareImgBlock'>
+              <img
+                src={URL.createObjectURL(file)}
+                alt='shareImg'
+                className='shareImg'
+              />
+              <Cancel
+                className='cancelImgButton'
+                onClick={() => setFile(null)}
+              />
+            </div>
+          </div>
+        )}
         <form className='shareBottom' onSubmit={onUploadPostImgAndCreatePost}>
           <div className='shareOptions'>
             <label htmlFor='file'>

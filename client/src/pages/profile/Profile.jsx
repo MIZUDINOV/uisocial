@@ -4,6 +4,7 @@ import Topbar from '../../components/topbar/Topbar'
 import Sidebar from '../../components/sidebar/Sidebar'
 import Feed from '../../components/feed/Feed'
 import Rightbar from '../../components/rightbar/Rightbar'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
@@ -16,7 +17,7 @@ export const noCover =
   'https://res.cloudinary.com/esperson/image/upload/v1625578345/AvatarsFromUsers/noCover_czgqqr.png'
 
 export default function Profile() {
-  const [user, setUser] = React.useState({})
+  const [user, setUser] = React.useState(null)
 
   const { username } = useParams()
 
@@ -38,18 +39,18 @@ export default function Profile() {
             <div className='profileCover'>
               <img
                 className='profileCoverImg'
-                src={user.coverPicture || noCover}
+                src={user?.coverPicture || noCover}
                 alt=''
               />
               <img
                 className='profileUserImg'
-                src={user.profilePicture || noAvatar}
+                src={user?.profilePicture || noAvatar}
                 alt=''
               />
             </div>
             <div className='profileInfo'>
-              <h4 className='profileInfoName'>{user.username}</h4>
-              <span className='profileInfoDesc'>{user.desc}</span>
+              <h4 className='profileInfoName'>{user?.username}</h4>
+              <span className='profileInfoDesc'>{user?.desc}</span>
             </div>
           </div>
           <div className='profileRightBottom'>

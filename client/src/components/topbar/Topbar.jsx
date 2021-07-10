@@ -5,6 +5,7 @@ import { Search, Person, Chat, Notifications } from '@material-ui/icons'
 import { Link } from 'react-router-dom'
 
 import { AuthContext } from '../../contextStore/AuthContext'
+import { noAvatar } from '../../pages/profile/Profile'
 
 export default function Topbar() {
   const { user } = React.useContext(AuthContext)
@@ -46,11 +47,7 @@ export default function Topbar() {
         </div>
         <Link to={`/profile/${user.username}`}>
           <img
-            src={
-              user.profilePicture
-                ? user.profilePicture
-                : '/assets/person/noProfilePicture.png'
-            }
+            src={user.profilePicture ? user.profilePicture : noAvatar}
             alt='Avatar'
             className='topbarImg'
           />

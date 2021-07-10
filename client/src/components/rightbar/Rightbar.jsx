@@ -15,13 +15,15 @@ export default function Rightbar({ user }) {
   const [friends, setFriends] = React.useState([])
 
   React.useEffect(() => {
-    const fetchFriends = async () => {
-      const friendsList = await axios.get(
-        `/users/friends/${user ? user._id : currentUser._id}`
-      )
-      setFriends(friendsList.data)
+    if (user?._id) {
+      const fetchFriends = async () => {
+        const friendsList = await axios.get(
+          `/users/friends/${user ? user._id : currentUser._id}`
+        )
+        setFriends(friendsList.data)
+      }
+      fetchFriends()
     }
-    fetchFriends()
   }, [user, user?._id, user?.followings, currentUser._id])
 
   const HomeRightbar = () => {
@@ -47,17 +49,49 @@ export default function Rightbar({ user }) {
 
   const ProfileRightbar = () => {
     const [isLoading, setIsLoading] = React.useState(false)
-    const [followed, setFollowed] = React.useState(false)
+    const [followed, setFollowed] = React.useState(
+      currentUser.followings.includes(user?._id)
+    )
+
+    React.useEffect(() => {
+      setFollowed(currentUser.followings?.includes(user?._id))
+    }, [currentUser.followings, user?._id])
+
+    const onFollowAndUnfollow = async () => {
+      try {
+        setIsLoading(true)
+        if (!followed && user._id) {
+          await axios.put(`/users/${user._id}/follow`, {
+            userId: currentUser._id,
+          })
+
+          setFollowed(true)
+        } else {
+          user._id &&
+            (await axios.put(`/users/${user._id}/unfollow`, {
+              userId: currentUser._id,
+            }))
+
+          setFollowed(false)
+        }
+        setIsLoading(false)
+      } catch (error) {}
+    }
 
     return (
       <>
-        <div className='rightbarFollowButton'>
-          <button className='rightbarButton'>
-            {followed ? 'Unfollow' : 'Follow'}
-            {followed ? isLoading || <Remove /> : isLoading || <Add />}
-            {isLoading && <CircularProgress style={{ color: 'white' }} />}
-          </button>
-        </div>
+        {currentUser._id !== user._id && (
+          <div className='rightbarFollowButton'>
+            <button className='rightbarButton' onClick={onFollowAndUnfollow}>
+              {followed ? 'Unfollow' : 'Follow'}
+              {followed ? isLoading || <Remove /> : isLoading || <Add />}
+              {isLoading && (
+                <CircularProgress style={{ color: 'white' }} size={20} />
+              )}
+            </button>
+          </div>
+        )}
+
         <h4 className='rightbarTitle'>User information</h4>
         <div className='rightbarInfo'>
           <div className='rightbarInfoItem'>
@@ -72,16 +106,6 @@ export default function Rightbar({ user }) {
               {user ? user.from || '-' : currentUser.from}
             </span>
           </div>
-          {/* <div className='rightbarInfoItem'>
-            <span className='rightbarInfoKey'>Relationship:</span>
-            <span className='rightbarInfoValue'>
-              {user.relationship === 1
-                ? 'Single'
-                : user.relationship === 1
-                ? 'Married'
-                : '-'}
-            </span>
-          </div> */}
         </div>
         <h4 className='rightbarTitle'>User friends</h4>
         {friends ? (

@@ -7,6 +7,8 @@ import './post.css'
 import { format } from 'timeago.js'
 import axios from 'axios'
 import { AuthContext } from '../../contextStore/AuthContext'
+import { noAvatar } from '../../pages/profile/Profile'
+import FavoriteIcon from '@material-ui/icons/Favorite'
 
 export default function Post({ post }) {
   const [user, setUser] = React.useState({})
@@ -17,8 +19,9 @@ export default function Post({ post }) {
 
   React.useEffect(() => {
     setIsLiked(post.likes.includes(currentUser._id))
-  }, [currentUser._id, post.likes])
+  }, [post.likes, currentUser._id])
 
+  //get a user
   React.useEffect(() => {
     const fetchUser = async () => {
       const res = await axios.get(`/users?userId=${post.userId}`)
@@ -27,17 +30,13 @@ export default function Post({ post }) {
     fetchUser()
   }, [post.userId])
 
-  React.useEffect(() => {
-    setIsLiked(post.likes.includes(currentUser._id))
-  }, [currentUser._id, post.likes])
-
   const likeHandler = async () => {
     try {
-      await axios.put(`/posts/${post.userId}/like`, { userId: currentUser._id })
+      await axios.put(`/posts/${post._id}/like`, { userId: currentUser._id })
       setLike(isLiked ? like - 1 : like + 1)
       setIsLiked(!isLiked)
     } catch (error) {
-      console.log(error)
+      console.log('Ирор:', error.response)
     }
   }
   return (
@@ -48,11 +47,7 @@ export default function Post({ post }) {
             <Link to={`profile/${user.username}`}>
               <img
                 className='postProfileImg'
-                src={
-                  user.profielPicture
-                    ? user.profilePicture
-                    : 'http://localhost:3000/assets/person/noProfilePicture.png'
-                }
+                src={user.profielPicture ? user.profilePicture : noAvatar}
                 alt=''
               />
             </Link>
@@ -75,19 +70,12 @@ export default function Post({ post }) {
         </div>
         <div className='postBottom'>
           <div className='postBottomLeft'>
-            <img
-              className='likeIcon'
-              src='assets/like.png'
+            <FavoriteIcon
+              style={{ cursor: 'pointer' }}
+              color={isLiked ? 'secondary' : 'primary'}
               onClick={likeHandler}
-              alt=''
             />
-            <img
-              className='likeIcon'
-              src='assets/heart.png'
-              onClick={likeHandler}
-              alt=''
-            />
-            <span className='postLikeCounter'>{like} people like it</span>
+            <span className='postLikeCounter'>{like}</span>
           </div>
           <div className='postBottomRight'>
             <span className='postCommentText'>{post.comment} comments</span>
